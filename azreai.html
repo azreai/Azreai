@@ -1026,20 +1026,13 @@ Réponds UNIQUEMENT en JSON valide (pas de markdown, pas de backticks), avec cet
 {"hook":"accroche percutante pour les 3 premières secondes","script":"script complet adapté à ${duration}s avec [PAUSE] [EFFET] [TRANSITION] si nécessaire","cta":"appel à l'action final","caption":"légende TikTok max 150 caractères","hashtags":["h1","h2","h3","h4","h5","h6","h7","h8"],"tip":"conseil de tournage ou montage pour maximiser l'impact"}`;
 
   try {
-    const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+    const res = await fetch('/api/generate', {
       method:'POST',
-      headers:{
-        'Content-Type':'application/json',
-        'Authorization':'Bearer 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'
-      },
-      body: JSON.stringify({
-        model:'llama3-70b-8192',
-        max_tokens:1000,
-        messages:[{role:'user',content:prompt}]
-      })
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ prompt })
     });
     const data = await res.json();
-    const text = data.choices[0].message.content;
+    const text = data.result;
     const clean = text.replace(/```json|```/g,'').trim();
     const result = JSON.parse(clean);
 

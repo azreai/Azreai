@@ -332,7 +332,7 @@ hr.div { border:none; border-top:1px solid var(--border); margin:1.1rem 0; }
 .pricing-grid {
   display:grid; grid-template-columns:1fr 1fr; gap:1.2rem; margin-top:2.5rem;
 }
-@media(max-width:620px){ .pricing-grid { grid-template-columns:1fr; } }
+@media(max-width:820px){ .pricing-grid { grid-template-columns:1fr !important; } }
 
 .plan-card {
   background:var(--surface); border:1px solid var(--border);
@@ -660,38 +660,52 @@ footer {
     <div class="section-title">Simple & transparent</div>
     <div class="section-sub">Commence gratuitement, passe Pro quand tu es prêt·e.</div>
 
-    <div class="pricing-grid">
+    <div class="pricing-grid" style="grid-template-columns:repeat(3,1fr);">
       <!-- FREE -->
       <div class="plan-card">
         <div class="plan-name">Gratuit</div>
-        <div class="plan-price"><sup>€</sup>0<sub>/mois</sub></div>
+        <div class="plan-price"><sup></sup>0<sub>FCFA/mois</sub></div>
         <div class="plan-desc">Pour découvrir AzreAI</div>
         <ul class="plan-features">
           <li><span class="icon">✓</span> 3 générations offertes</li>
           <li><span class="icon">✓</span> Scripts + Hashtags</li>
           <li><span class="icon">✓</span> Toutes les catégories</li>
           <li><span class="icon x">✕</span> <span style="color:var(--muted)">Générations illimitées</span></li>
-          <li><span class="icon x">✕</span> <span style="color:var(--muted)">Historique des scripts</span></li>
           <li><span class="icon x">✕</span> <span style="color:var(--muted)">Support prioritaire</span></li>
         </ul>
         <button class="btn-plan outline" onclick="openAuth('signup')">Commencer gratuitement</button>
+      </div>
+
+      <!-- STARTER -->
+      <div class="plan-card">
+        <div class="plan-badge" style="background:var(--teal);color:#000;">⚡ Starter</div>
+        <div class="plan-name">Starter</div>
+        <div class="plan-price"><sup></sup>5 000<sub>FCFA/mois</sub></div>
+        <div class="plan-desc">Pour les créateurs réguliers</div>
+        <ul class="plan-features">
+          <li><span class="icon">✓</span> <strong>20 générations</strong>/mois</li>
+          <li><span class="icon">✓</span> Scripts + Hashtags</li>
+          <li><span class="icon">✓</span> Toutes les catégories</li>
+          <li><span class="icon">✓</span> Call to Action IA</li>
+          <li><span class="icon x">✕</span> <span style="color:var(--muted)">Support prioritaire</span></li>
+        </ul>
+        <button class="btn-plan outline" style="border-color:var(--teal);color:var(--teal);" onclick="openPayment('starter')">Choisir Starter — 5 000 FCFA</button>
       </div>
 
       <!-- PRO -->
       <div class="plan-card featured">
         <div class="plan-badge">🔥 Populaire</div>
         <div class="plan-name">Pro</div>
-        <div class="plan-price"><sup>€</sup>9,99<sub>/mois</sub></div>
+        <div class="plan-price"><sup></sup>10 000<sub>FCFA/mois</sub></div>
         <div class="plan-desc">Pour les créateurs sérieux</div>
         <ul class="plan-features">
           <li><span class="icon">✓</span> Générations <strong>illimitées</strong></li>
           <li><span class="icon">✓</span> Scripts + Hashtags + CTA</li>
           <li><span class="icon">✓</span> Toutes les catégories</li>
-          <li><span class="icon">✓</span> Historique des scripts</li>
           <li><span class="icon">✓</span> Conseils de tournage IA</li>
           <li><span class="icon">✓</span> Support prioritaire</li>
         </ul>
-        <button class="btn-plan primary" onclick="openPayment()">Passer à Pro — 9,99€/mois</button>
+        <button class="btn-plan primary" onclick="openPayment('pro')">Passer à Pro — 10 000 FCFA</button>
       </div>
     </div>
   </section>
@@ -811,7 +825,7 @@ footer {
       📋 <strong style="color:var(--white);">Comment ça marche ?</strong><br>
       1. Envoie <strong style="color:var(--teal);">5 000 FCFA</strong> sur Wave ou Orange Money<br>
       2. Envoie une capture d'écran à <strong style="color:var(--white);">bmb.ffx@gmail.com</strong><br>
-      3. Ton compte Pro sera activé sous 24h ✅
+      3. Ton compte sera activé sous 24h ✅
     </div>
   </div>
 </div>
@@ -924,9 +938,25 @@ function logout() {
 }
 
 // ─── PAYMENT ──────────────────────────────────────────
-function openPayment() {
+function openPayment(plan) {
   if (!currentUser) { openAuth('signup'); return; }
-  document.getElementById('payModal').classList.add('show');
+  const modal = document.getElementById('payModal');
+  const title = modal.querySelector('h2');
+  const sub = modal.querySelector('p.sub');
+  const priceEl = modal.querySelector('.pay-plan-price');
+  const nameEl = modal.querySelector('.pay-plan-name');
+  if (plan === 'starter') {
+    title.textContent = 'Passer à Starter ⚡';
+    sub.textContent = '20 générations/mois — 5 000 FCFA/mois';
+    priceEl.textContent = '5 000 FCFA/mois';
+    nameEl.textContent = 'Plan Starter';
+  } else {
+    title.textContent = 'Passer à Pro 🔥';
+    sub.textContent = 'Générations illimitées — 10 000 FCFA/mois';
+    priceEl.textContent = '10 000 FCFA/mois';
+    nameEl.textContent = 'Plan Pro';
+  }
+  modal.classList.add('show');
 }
 function closePayment() { document.getElementById('payModal').classList.remove('show'); }
 function copyNum(num) {
@@ -996,17 +1026,20 @@ Réponds UNIQUEMENT en JSON valide (pas de markdown, pas de backticks), avec cet
 {"hook":"accroche percutante pour les 3 premières secondes","script":"script complet adapté à ${duration}s avec [PAUSE] [EFFET] [TRANSITION] si nécessaire","cta":"appel à l'action final","caption":"légende TikTok max 150 caractères","hashtags":["h1","h2","h3","h4","h5","h6","h7","h8"],"tip":"conseil de tournage ou montage pour maximiser l'impact"}`;
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method:'POST',
-      headers:{'Content-Type':'application/json'},
+      headers:{
+        'Content-Type':'application/json',
+        'Authorization':'Bearer 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'
+      },
       body: JSON.stringify({
-        model:'claude-sonnet-4-20250514',
+        model:'llama3-70b-8192',
         max_tokens:1000,
         messages:[{role:'user',content:prompt}]
       })
     });
     const data = await res.json();
-    const text = data.content.map(i => i.text||'').join('');
+    const text = data.choices[0].message.content;
     const clean = text.replace(/```json|```/g,'').trim();
     const result = JSON.parse(clean);
 
